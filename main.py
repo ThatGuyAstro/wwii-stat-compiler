@@ -29,6 +29,11 @@ from random import * #Random file names
 import time #Sleep function so we can give API servers some relief
 import os #Directory creation
 
+def safe_div(x,y):
+    if y == 0:
+        return 0
+    return x / y
+
 #Create our directories for holding stats
 if not os.path.exists('results_career'):
     os.makedirs('results_career')
@@ -76,7 +81,10 @@ try:
             career_kdr = data_lifetime['kdRatio']
             career_wins = data_lifetime['wins']
             career_losses = data_lifetime['losses']
-            career_wl = (career_wins / career_losses) * 100 #Our winloss ratio as a percentage
+
+
+            career_wl = (safe_div(career_wins, career_losses)) * 100 #Our winloss ratio as a percentage
+
             weekly_spm = data['data']['mp']['weekly']['all']['scorePerMinute']
 
             #Open our data file in append-mode
@@ -100,7 +108,7 @@ try:
             tdm_kills = data_tdm['kills']
             tdm_deaths = data_tdm['deaths']
 
-            tdm_kdr = (tdm_kills / tdm_deaths) #Calculate our kill-death ratio
+            tdm_kdr = safe_div(tdm_kills, tdm_deaths) #Calculate our kill-death ratio
 
             tdm_wins = data_tdm['wins']
             tdm_losses = data_tdm['losses']
@@ -108,12 +116,8 @@ try:
             #Set our default w/l to 0 in case we discover a 0 value during division
             tdm_wl = 0
 
-            #This if statement is necessary in case we find out an account
-            #has no wins or losses, this results in a division of 0 which
-            #makes Python throw a tantrum... otherwise the whole script
-            #will stop working
-            if tdm_wins > 0 and tdm_losses > 0:
-                tdm_wl = (tdm_wins / tdm_losses) * 100 #Calculate our win-loss ratio as a percentage
+
+            tdm_wl = (safe_div(tdm_wins, tdm_losses)) * 100 #Calculate our win-loss ratio as a percentage
 
 
             tdm_timeplayed = data_tdm['timePlayed'] #Our time played in seconds
@@ -128,10 +132,11 @@ try:
             print('... done. \r\n\r\n')
 
             #Pause our script for 5 seconds so we don't overload API servers
-            time.sleep(5)
+            time.sleep(1)
 
         #Let our user know that we're done with current iteration
         print('Finished recording stats. \r\nFile id: ' + rand_prefix)
 
-except:
+except Exception as e:
     print('oops... looking like we encountered an error')
+    print(e)
