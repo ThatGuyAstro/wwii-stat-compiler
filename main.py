@@ -83,7 +83,8 @@ try:
             career_losses = data_lifetime['losses']
 
 
-            career_wl = (safe_div(career_wins, career_losses)) * 100 #Our winloss ratio as a percentage
+            career_wl = float((safe_div(career_wins, career_losses)) * 100) #Our winloss ratio as a percentage
+
 
             weekly_spm = data['data']['mp']['weekly']['all']['scorePerMinute']
 
@@ -117,7 +118,7 @@ try:
             tdm_wl = 0
 
 
-            tdm_wl = (safe_div(tdm_wins, tdm_losses)) * 100 #Calculate our win-loss ratio as a percentage
+            tdm_wl = float((safe_div(tdm_wins, tdm_losses)) * 100) #Calculate our win-loss ratio as a percentage
 
 
             tdm_timeplayed = data_tdm['timePlayed'] #Our time played in seconds
@@ -132,7 +133,7 @@ try:
             print('... done. \r\n\r\n')
 
             #Pause our script for 5 seconds so we don't overload API servers
-            time.sleep(1)
+            #time.sleep(1)
 
         #Let our user know that we're done with current iteration
         print('Finished recording stats. \r\nFile id: ' + rand_prefix)
